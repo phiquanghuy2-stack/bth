@@ -1,24 +1,26 @@
 import sys
 
-
 def solve():
-  input_data = sys.stdin.read().split()
-  if not input_data:
-    return
-  n = int(input_data[0])
-  A = [int(x) for x in input_data[1 : n + 1]]
-  B = [int(x) for x in input_data[n + 1 : 2 * n + 1]]
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    k = int(data[1])
 
-  intersection = []
-  for i in range(n):
-    if A[i] == 1 and B[i] == 1:
-      intersection.append(i + 1)  # Chỉ số i biểu thị phần tử i+1
+    # dp[j]: số xâu hợp lệ hiện tại kết thúc bằng đúng j số 0 liên tiếp
+    dp = [0] * k
+    dp[0] = 1
 
-  q = len(intersection)
-  print(q)
-  if q > 0:
-    print(*(intersection))
+    for _ in range(n):
+        new_dp = [0] * k
+        # Thêm '1' vào cuối -> số lượng số 0 liên tiếp ở cuối về 0
+        new_dp[0] = sum(dp)
+        # Thêm '0' vào cuối -> tăng số lượng số 0 liên tiếp lên 1
+        for j in range(1, k):
+            new_dp[j] = dp[j - 1]
+        dp = new_dp
 
+    print(sum(dp))
 
-if __name__ == "__main__":
-  solve()
+if __name__ == '__main__':
+    solve()

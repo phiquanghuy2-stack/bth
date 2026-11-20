@@ -1,22 +1,58 @@
 import sys
 
-
 def solve():
-  line = sys.stdin.read().split()
-  if not line:
-    return
-  N = int(line[0])
-  l = int(line[1])
-  u = int(line[2])
+    data = sys.stdin.read().split()
+    if not data:
+        return
+    n = int(data[0])
+    k = int(data[1])
 
-  ans = 0
-  start = max(0, l)
-  end = min(N, u)
-  for x0 in range(start, end + 1):
-    S = N - x0
-    ans += S + 1  # Số nghiệm của x1 + x2 = S là S + 1
-  print(ans)
+    fixed = [0] * (n + 1)  
+    used = [False] * (n + 1)
 
+    idx = 2
+    for _ in range(k):
+        u = int(data[idx])
+        v = int(data[idx + 1])
+        idx += 2
 
-if __name__ == "__main__":
-  solve()
+        if fixed[u] != 0:
+            if fixed[u] != v:
+                print(0)
+                return
+            continue
+        if used[v]:
+            print(0)
+            return
+
+        fixed[u] = v
+        used[v] = True
+
+    perm = [0] * (n + 1)
+    out = []
+
+    def backtrack(pos):
+        if pos > n:
+            out.append(" ".join(map(str, perm[1:])))
+            return
+
+        if fixed[pos] != 0:
+            perm[pos] = fixed[pos]
+            backtrack(pos + 1)
+        else:
+            for val in range(1, n + 1):
+                if not used[val]:
+                    used[val] = True
+                    perm[pos] = val
+                    backtrack(pos + 1)
+                    used[val] = False
+
+    backtrack(1)
+
+    if not out:
+        print(0)
+    else:
+        sys.stdout.write("\n".join(out) + "\n")
+
+if __name__ == '__main__':
+    solve()
